@@ -1,83 +1,147 @@
-# Python Project Template Repository
+# Autonomy Simulator
 
-> A template for creating new python projects repositories in the [@Flyability](https://github.com/Flyability) organization
+Python package to setup and use the autonomy simulator.
 
-This repository is meant to serve as a general template for how to set up new python projects repositories in the [@Flyability](https://github.com/Flyability) organization. In general, setting up a new repository should take only a few minutes; use this repository as a way of finding example files, and use the following checklist to ensure that you've set up the repository correctly.
+## Installation
 
-## Use Template
+### Requirements
 
-> [!CAUTION]
-> This is meant to be used from **[Use this template](https://github.com/Flyability/python-template-repository)** feature.
-
-Once the repository is created, you can clone it on our workstation and complete the checklist.
-
-### Using Template Locally
-
-If you want to use the template without creating a github repository first:
+Make sure your `.pip/pip.conf` file contains the `--index-url` option with your
+JFrog credentials
 
 ```bash
-git clone https://github.com/Flyability/your_python_template_repository
-cd your_python_template_repository/
-rm -rf .git
-git add --all
-git commit -m "Initial commit"
+[global]
+index-url = https://<username>:<key>@flyability.jfrog.io/artifactory/api/pypi/pypi-virtual/simple
 ```
 
-## Checklist
+### User
 
-Go through this checklist after creating your repository. It should only take a couple of minutes; if there is a way to make this more efficient, open an issue and let's talk about it here! \m/
-
-### Main Files
-
-- [ ] Rename all instances of `python_template_repository` in all files to match the new repo title by running the following commands:
-- [ ] Rename the template README: `mv README.md setup_checklist.md` Once you complete the checklist, you can remove this file
-- [ ] Use the example README as repository README: `mv example-README.md README.md`
+Create a new virtual environment and source it (you can also use an existing one):
 
 ```bash
-python3 rename_project.py
+python3 -m venv .venv
+. .venv/bin/activate
 ```
 
-- [ ] Delete `rename_project.py`
-- [ ] Manually go through and edit the rest of the README.
-- [ ] Make sure `pyproject.toml` is correct, did you change the name and the dependencies?
-- [ ] Make sure an appropriate package author has been set
-- [ ] Remove the `dummy` packages and replace it by your files.
+Installing package locally:
 
-### Dotfiles
+```bash
+python3 -m pip install .
+```
 
-- [ ] Do you need a `.gitignore` file?
+Then, from anywhere on your system, you can use the scripts declared in
+`pyproject.toml` in `[project.scripts]`. For example:
 
-### Documentation
+```bash
+auto_sim_dummy
+```
 
-- [ ] Did you add your project on [readthedocs.com](https://readthedocs.com/dashboard)? To do so, contact an admin of [@Flyability](https://github.com/Flyability) organization.
-- [ ] Did you write a proper documentation for your project?
-- [ ] Did you write a proper README.md file?
+### Developer
 
-### GitHub Metadata
+You can use the `python -m pip install -e .` option to install in editable mode.
 
-- [ ] Have you added a short description to the repository?
-  - [ ] Is the description matched in the byline under the title in the README?
-- [ ] Have you added topics to the GitHub repository: `stability`, `python`, and so on?
-- [ ] Is `master` the default branch? Did you protect it?
-  - [ ] The following must be ticked:
-    - [ ] Require a pull request before merging,
-    - [ ] Require approvals (1),
-    - [ ] Require review from Code Owners,
-    - [ ] Allow specified actors to bypass required pull requests (flyabot),
-    - [ ] Require status checks to pass before merging,
-    - [ ] Require branches to be up to date before merging,
-    - [ ] Require conversation resolution before merging
-- [ ] Did you change the repository merging setting to "Allow only merge squash"?
+To install the tools for development (listed in `pyproject.toml` under
+`[project.optional-dependencies]`), use:
 
-### Github Actions Workflows
+```bash
+python3 -m pip install .[dev]
+```
 
-- [ ] Did you create the [SonarQubecloud](https://sonarcloud.io/) project related to your repository?
-  - [ ] Did you double-checked that the sonar configuration is correct (name and project key) ?
-- [ ] Choose the image that you need to run github actions (`ubuntu-24.04` by default).
-- [ ] Consider if you want to cache the python dependencies. The advantage is that for a
-    large amount of dependencies, the workflow will be faster. The disadvantage is
-    the added complexity if something breaks.
+## Documentation
 
-## Contribute
+Run the following command to build the `auto_sim` documentation from
+the root of the repository:
 
-If you think this could be better, please open a pull request!
+```bash
+( cd docs; rm -fr _build _autosummary; sphinx-build -M  html . _build -W --keep-going && sphinx-build -M linkcheck . _build )
+```
+
+To build quickly the documentation, you can run:
+
+```bash
+sphinx-build -M html docs docs/_build -W --keep-going
+```
+
+This will be much faster, but it will not guarantee that all the documentation is up to
+date or that all links are reachable.
+
+Open the HTML documentation with your default browser:
+`sensible-browser docs/_build/html/index.html`
+
+## Code quality
+
+To improve Python code quality, the following frameworks have been chosen:
+
+* [black](https://black.readthedocs.io/en/stable/): tool to format Python code
+* [mypy](https://github.com/python/mypy): static type checker for Python.
+  See the config in `pyproject.toml`.
+  * [PEP 484 -- Type Hint](https://www.python.org/dev/peps/pep-0484/): a Python
+      Enhancement Proposal providing a standard syntax for type annotations.
+  * [Type hints cheat sheet (Python 3)](https://mypy.readthedocs.io/en/stable/cheat_sheet_py3.html):
+      shows how the PEP 484 type annotation notation represents various common types
+      in Python 3.
+* [pytest](https://docs.pytest.org/en/latest/): automated tests framework that supports unittest
+* [ruff](https://beta.ruff.rs/docs/): extremely fast Python linter, written in Rust.
+  The rules selected are very close to flake8 + isort.
+* [pydoclint](https://github.com/jsh9/pydoclint): docstring analysis
+
+These tools are run automatically for each pull-request.
+
+### Run manually
+
+To test and format manually the code quality, go at the root of `auto_sim`
+project:
+
+* Formatter: `black .`
+* Linter: `ruff check .`
+* Document linter: `pydoclint .`
+* Static type checker: `mypy --install-types --non-interactive .`
+* Unit testing: `pytest`
+
+You might want to check out [pydocstyle](http://www.pydocstyle.org/en/stable/) to help you
+with the formatting of pyyour documentation as well.
+
+## Docstrings
+
+All modules, classes, methods, and functions should have a docstring.
+
+All docstrings should have a resuming sentence (ending with a '.') on the first line.
+
+The docstrings style is the [standard sphinx style](https://sphinx-rtd-tutorial.readthedocs.io/en/latest/docstrings.html#the-sphinx-docstring-format).
+
+## auto_sim base structure
+
+ auto_sim structure with one `dummy` module using as example:
+
+```bash
+.
+├── docs
+│   ├── conf.py
+│   ├── nitpick-exceptions
+│   ├── _static
+│   │   └── css
+│   │       └── custom.css
+│   ├── _templates
+│   ├── index.rst
+│   ├── api.rst
+│   └── usage
+│       └── installation.rst
+├── src
+│   ├── auto_sim
+│   │   ├── __init__.py
+│   │   ├── package
+│   │   │   ├── __init__.py
+│   │   │   └── module.py
+│   │   ├── scripts
+│   │   │   ├── __init__.py
+│   │   │   └── script.py
+│   │   └── other_module.py
+├── tests
+│   └── package
+│       └── test_module.py
+├── README.md
+├── pyproject.toml
+├── .gitignore
+├── .readthedocs.yaml
+└── sonar-project.properties
+```

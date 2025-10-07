@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
-# <python_template_repository> documentation build configuration file, created by
+# <auto_sim> documentation build configuration file, created by
 # sphinx-quickstart on Tue Mar 16 15:31:57 2021.
 #
 # This file is execfile()d with the current directory set to its
@@ -60,7 +60,7 @@ source_suffix = ".rst"
 master_doc = "index"
 
 # General information about the project.
-project = "python_template_repository"
+project = "auto_sim"
 copyright = "2025, Flyability"
 author = "Flyability"
 

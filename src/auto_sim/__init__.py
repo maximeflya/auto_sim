@@ -1,5 +1,5 @@
 """
-python_template_repository
+auto_sim
 ===============================================================================
 
 Documentation is available in the docstrings.

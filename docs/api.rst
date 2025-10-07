@@ -6,4 +6,4 @@ API
    :template: custom-module-template.rst
    :recursive:
 
-   python_template_repository
+   auto_sim

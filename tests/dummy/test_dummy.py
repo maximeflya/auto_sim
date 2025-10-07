@@ -2,7 +2,7 @@ from typing import Sequence
 
 import pytest
 
-from python_template_repository.dummy import Dummy
+from auto_sim.dummy import Dummy
 
 
 class TestDummy:

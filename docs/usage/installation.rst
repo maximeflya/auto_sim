@@ -6,10 +6,10 @@ Prerequisites
 
 Tools
 ~~~~~
-python_template_repository requires `Python 3 <https://www.python.org/downloads/>`_.
+auto_sim requires `Python 3 <https://www.python.org/downloads/>`_.
 
 If you want to install from Github, you need a Github account with read access to
-the `python_template_repository <https://github.com/Flyability/python-template-repository>`_ repository.
+the `auto_sim <https://github.com/Flyability/auto-sim>`_ repository.
 The installation also requires `git <https://git-scm.com/>`_ and
 `SSH setup with your github account <https://docs.github.com/en/authentication/connecting-to-github-with-ssh>`_.
 
@@ -23,7 +23,7 @@ On Ubuntu, you can use the following commands to install ``pip`` and ``git``:
 
 Dependencies
 ~~~~~~~~~~~~
-python_template_repository depends on Flyability packages, which needs to be installed in
+auto_sim depends on Flyability packages, which needs to be installed in
 your python environment.
 
 You will have to add the URL of the JFrog platform to your pip configuration. Your

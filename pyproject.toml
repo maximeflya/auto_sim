@@ -5,9 +5,9 @@ build-backend = "setuptools.build_meta"
 [tool.setuptools_scm]
 
 [project]
-name = "python_template_repository"
+name = "auto_sim"
 authors = [{ name = "Flyability", email = "sws@flyability.com" }]
-description = "<ADD PACKAGE DESCRIPTION>"
+description = "Autonomy simulator"
 license = { text = "FlyaPrivate" }
 requires-python = ">=3.11"
 dynamic = ["version"]
@@ -33,7 +33,7 @@ lint = [
     "pydoclint",
     "pytest",    # required for mypy
 ]
-dev = ["python_template_repository[test,doc,lint]"]
+dev = ["auto_sim[test,doc,lint]"]
 
 [project.scripts]
 
@@ -72,7 +72,7 @@ select = [
 
 [tool.ruff.lint.isort]
 combine-as-imports = true
-known-first-party = ["python_template_repository"]
+known-first-party = ["auto_sim"]
 
 [tool.ruff.lint.mccabe]
 max-complexity = 10
@@ -113,14 +113,11 @@ addopts = ["--import-mode=importlib"]
 
 [tool.coverage.run]
 source = ["src"]
-source_pkgs = ["python_template_repository"]
+source_pkgs = ["auto_sim"]
 relative_files = true
 
 [tool.coverage.paths]
-source = [
-    "src/python_template_repository",
-    "*/site-packages/python_template_repository",
-]
+source = ["src/auto_sim", "*/site-packages/auto_sim"]
 
 
 [tool.pydoclint]
