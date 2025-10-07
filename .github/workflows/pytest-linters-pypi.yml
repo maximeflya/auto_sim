@@ -1,0 +1,94 @@
+name: Run tests, linters and upload to PyPi
+on:
+  push:
+    branches:
+      - 'master'
+    tags:
+      - '**'
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  run-unit-tests:
+    name: Run unit tests with pytest
+    ## Example using an amazon container:  https://github.com/Flyability/kalibr/blob/master/.github/workflows/build.yml
+    runs-on: ubuntu-24.04
+    strategy:
+     matrix:
+       python-version: ["3.12"]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Setup python
+        uses: Flyability/setup-python-package@1.1.0
+        with:
+          artifactory-user: ${{ secrets.ARTIFACTORY_USER }}
+          artifactory-password: ${{ secrets.ARTIFACTORY_PASSWORD }}
+          pip-install: ".[test]"
+          python-version: ${{ matrix.python-version }}
+      - name: Run tests and compute coverage
+        run: |
+          python3 -m pytest --cov --cov-report=xml -v --junitxml=xunit-result.xml
+      - name: SonarQube scan
+        uses: SonarSource/sonarqube-scan-action@master
+        if: ${{ github.actor != 'dependabot[bot]' && strategy.job-index == 0 }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+  run-codecheck:
+    name: Run code checks
+    runs-on: ubuntu-24.04
+    strategy:
+     matrix:
+       python-version: ["3.12"]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup python
+        uses: Flyability/setup-python-package@1.1.0
+        with:
+          artifactory-user: ${{ secrets.ARTIFACTORY_USER }}
+          artifactory-password: ${{ secrets.ARTIFACTORY_PASSWORD }}
+          pip-install: ".[lint]"
+          python-version: ${{ matrix.python-version }}
+      - name: Tools version
+        run: |
+          python3 -m pip list 2>&1 | grep -E "ruff|black|mypy|pydoclint"
+      - name: Run ruff check
+        if: always()
+        run: ruff check --no-fix .
+      - name: Run black check
+        if: always()
+        run: black --check .
+      - name: Run mypy check
+        if: always()
+        run: mypy --install-types --non-interactive .
+      - name: Run pydoclint check
+        if: always()
+        run: pydoclint .
+      - name: Help on failure
+        if: failure()
+        run: |
+          echo "Do not forget to upgrade the lint tools installed on your laptop to make sure the output is the same as the pipeline"
+          echo "python3 -m pip install --upgrade black mypy pydoclint ruff"
+          false
+
+  upload-to-pypi-remote:
+    name: Upload to JFrog PyPi remote
+    runs-on: ubuntu-24.04
+    if: startsWith(github.ref, 'refs/tags')
+    steps:
+      - uses: actions/checkout@v4
+      - name: Upload package
+        run: |
+          python3 -m pip install -U pip twine build setuptools
+          python3 -m build .
+          twine check dist/*
+          twine upload --repository-url=${{ secrets.PYPI_URL }} --username=${{ secrets.ARTIFACTORY_USER }} --password=${{ secrets.ARTIFACTORY_PASSWORD }} dist/*
