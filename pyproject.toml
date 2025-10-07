@@ -36,6 +36,7 @@ lint = [
 dev = ["auto_sim[test,doc,lint]"]
 
 [project.scripts]
+configure_vscode = "auto_sim.scripts.configure_vscode:main"
 
 ######### TOOLS #########
 [tool.black]
