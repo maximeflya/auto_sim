@@ -37,6 +37,7 @@ dev = ["auto_sim[test,doc,lint]"]
 
 [project.scripts]
 configure_vscode = "auto_sim.scripts.configure_vscode:main"
+basic_scene = "auto_sim.scripts.basic_ros_scene:main"
 
 ######### TOOLS #########
 [tool.black]
@@ -104,7 +105,7 @@ exclude = ["docs/", ".venv/", "build/"]
 
 # We use some third-party libraries we don't have stubs for. Ignore them.
 [[tool.mypy.overrides]]
-module = ["some_module"]
+module = ["isaacsim.simulation_app"]
 ignore_missing_imports = true
 
 
