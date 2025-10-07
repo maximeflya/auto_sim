@@ -13,7 +13,7 @@ requires-python = ">=3.11"
 dynamic = ["version"]
 readme = "README.md"
 
-dependencies = []
+dependencies = ["pyyaml"]
 
 [project.optional-dependencies]
 test = ["pytest", "pytest-cov"]
@@ -105,7 +105,7 @@ exclude = ["docs/", ".venv/", "build/"]
 
 # We use some third-party libraries we don't have stubs for. Ignore them.
 [[tool.mypy.overrides]]
-module = ["isaacsim.simulation_app"]
+module = ["isaacsim.simulation_app", "isaacsim.core.api.world"]
 ignore_missing_imports = true
 
 
