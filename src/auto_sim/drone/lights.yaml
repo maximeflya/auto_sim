@@ -1,0 +1,69 @@
+- Parents: [/body/lights/light_lo,
+            /body/lights/light_li,
+            /body/lights/light_ri,
+            /body/lights/light_ro]
+  Name: /top
+  Translation:
+    - 0.01
+    - 0.0
+    - 0.01
+
+  Rotation:
+    - 0.0
+    - 0.70711
+    - 0.70711
+    - 0.0
+  Width: 0.02
+  Height: 0.005
+  Intensity: 0
+- Parents: [/body/lights/light_lo,
+            /body/lights/light_li,
+            /body/lights/light_ri,
+            /body/lights/light_ro]
+  Name: /upper
+  Translation:
+    - 0.01
+    - 0.0
+    - 0.005
+  Rotation:
+    - -0.35355
+    - 0.61237
+    - 0.61237
+    - -0.35355
+  Width: 0.02
+  Height: 0.005
+  Intensity: 0
+- Parents: [/body/lights/light_lo,
+            /body/lights/light_li,
+            /body/lights/light_ri,
+            /body/lights/light_ro]
+  Name: /lower
+  Translation:
+    - 0.01
+    - 0.0
+    - -0.005
+  Rotation:
+    - 0.61237
+    - -0.35355
+    - -0.35355
+    - 0.61237
+  Width: 0.02
+  Height: 0.005
+  Intensity: 0
+- Parents: [/body/lights/light_lo,
+            /body/lights/light_li,
+            /body/lights/light_ri,
+            /body/lights/light_ro]
+  Name: /bottom
+  Translation:
+    - 0.01
+    - 0.0
+    - -0.01
+  Rotation:
+    - 0.70711
+    - 0.0
+    - 0.0
+    - 0.70711
+  Width: 0.02
+  Height: 0.005
+  Intensity: 0

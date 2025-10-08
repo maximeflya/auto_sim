@@ -1,0 +1,6 @@
+- UpdateRate: 200.0
+  Parent: /body
+  Topic: body_imu
+- UpdateRate: 200.0
+  Parent: /vio
+  Topic: vio_imu

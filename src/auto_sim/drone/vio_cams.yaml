@@ -1,0 +1,87 @@
+- Parent: /body/vio/vio_cam/cam_0
+  Topic: camera_0
+  Encoding: mono8
+  Translation:
+    - 0.0
+    - 0.0
+    - 0.0
+  Rotation:
+    - 0
+    - -0.7071068
+    - 0
+    - -0.7071068
+  Height: 400
+  Width: 640
+  DownsamplingRatio: 1
+  Calibration:
+    FocusDistance: 0.5
+    ClippingRangeMin: 0.25
+    ClippingRangeMax: 1000.0
+    PixelSize: 6  # Microns
+    DiagonalFOV: 180
+    Fx: 383.68315598488607
+    Fy: 383.42679727488314
+    Cx: 324.88429534208245
+    Cy: 199.55718614360214
+    K1: -0.07173529610046654
+    K2: -0.017766413157069828
+    K3: 0.00683053461688574
+    K4: -0.0013468821291811677
+- Parent: /body/vio/vio_cam/cam_1
+  Topic: camera_1
+  Encoding: mono8
+  Translation:
+    - 0.0
+    - 0.0
+    - 0.0
+  Rotation:
+    - 0
+    - -0.7071068
+    - 0
+    - -0.7071068
+  Height: 400
+  Width: 640
+  DownsamplingRatio: 1
+  Calibration:
+    FocusDistance: 0.5
+    ClippingRangeMin: 0.25
+    ClippingRangeMax: 1000.0
+    PixelSize: 6  # Microns
+    DiagonalFOV: 180
+    Fx: 383.68315598488607
+    Fy: 383.42679727488314
+    Cx: 324.88429534208245
+    Cy: 199.55718614360214
+    K1: -0.07173529610046654
+    K2: -0.017766413157069828
+    K3: 0.00683053461688574
+    K4: -0.0013468821291811677
+- Parent: /body/vio/vio_cam/cam_2
+  Topic: camera_2
+  Encoding: mono8
+  Translation:
+    - 0.0
+    - 0.0
+    - 0.0
+  Rotation:
+    - 0
+    - -0.7071068
+    - 0
+    - -0.7071068
+  Height: 400
+  Width: 640
+  DownsamplingRatio: 1
+  Calibration:
+    FocusDistance: 0.5
+    ClippingRangeMin: 0.25
+    ClippingRangeMax: 1000.0
+    PixelSize: 6  # Microns
+    DiagonalFOV: 180
+    Fx: 383.68315598488607
+    Fy: 383.42679727488314
+    Cx: 324.88429534208245
+    Cy: 199.55718614360214
+    K1: -0.07173529610046654
+    K2: -0.017766413157069828
+    K3: 0.00683053461688574
+    K4: -0.0013468821291811677

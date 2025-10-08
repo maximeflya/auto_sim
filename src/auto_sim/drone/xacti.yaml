@@ -1,0 +1,29 @@
+Parent: /body/xacti
+Topic: xacti_cam
+Encoding: rgb8
+Translation:
+  - 0.0
+  - 0.0
+  - 0.0
+Rotation:
+  - 1.0
+  - 0.0
+  - 0.0
+  - 0.0
+Height: 1080
+Width: 1920
+DownsamplingRatio: 8
+Calibration:
+  FocusDistance: 0.46
+  ClippingRangeMin: 0.2
+  ClippingRangeMax: 1000.0
+  PixelSize: 3  # Microns
+  DiagonalFOV: 235
+  Fx: 877.54266666
+  Fy: 876.66072156
+  Cx: 978.43617365
+  Cy: 535.62881671
+  K1: 0.04558643
+  K2: 0.01975962
+  K3: -0.01040291
+  K4: 0.00137448

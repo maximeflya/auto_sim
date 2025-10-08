@@ -1,0 +1,122 @@
+  # TODO:The vio prim pose must match the pose in the assets usda file
+- Parent: /body
+  Name: /vio
+  Translation:
+    - 0.27111
+    - -0.03695
+    - -0.01281
+  Rotation:
+    - 0.999394834086488
+    - 0.004681034007436239
+    - -0.03242791930251894
+    - -0.011682618352560136
+- Parent: /body/vio
+  Name: /vio_cam
+  Translation:
+    - 0.0
+    - 0.0
+    - 0.0
+  Rotation:
+    - 0.7071068
+    - 0.0
+    - 0.0
+    - 0.7071068
+- Parent: /body/vio/vio_cam
+  Name: /cam_0
+  Translation:
+    - 0.0126
+    - 0.0068
+    - -0.0167
+  Rotation:
+    - 0.117929608
+    - 0.704610841
+    - -0.690776255
+    - 0.11155418
+- Parent: /body/vio/vio_cam
+  Name: /cam_1
+  Translation:
+    - 0.0096
+    - 0.0058
+    - 0.0102
+  Rotation:
+    - 0.653507914
+    - 0.257024913
+    - -0.246530608
+    - 0.667898390
+- Parent: /body/vio/vio_cam
+  Name: /cam_2
+  Translation:
+    - 0.0198
+    - 0.0066
+    - -0.0044
+  Rotation:
+    - 0.459069346
+    - 0.529982141
+    - -0.549794212
+    - 0.453983029
+- Parent: /body
+  Name: /lights
+  Translation:
+    - 0.27878
+    - 0.0
+    - -0.0146
+  Rotation:
+    - 0.0
+    - 0.0
+    - 0.0
+    - 1.0
+- Parent: /body/lights
+  Name: /light_lo
+  Translation:
+    - 0.025
+    - -0.13
+    - 0.0
+  Rotation:
+    - -0.29237
+    - 0.0
+    - 0.0
+    - 0.9563
+- Parent: /body/lights
+  Name: /light_li
+  Translation:
+    - 0.0
+    - -0.069
+    - 0.0
+  Rotation:
+    - 0.10819
+    - 0.0
+    - 0.0
+    - -0.99413
+- Parent: /body/lights
+  Name: /light_ri
+  Translation:
+    - 0.0
+    - 0.069
+    - 0.0
+  Rotation:
+    - 0.10819
+    - 0.0
+    - 0.0
+    - 0.99413
+- Parent: /body/lights
+  Name: /light_ro
+  Translation:
+    - 0.025
+    - 0.13
+    - 0.0
+  Rotation:
+    - 0.29237
+    - 0.0
+    - 0.0
+    - 0.9563
+- Parent: /body
+  Name: /xacti
+  Translation:
+    - 0.27111
+    - 0.0
+    - -0.01281
+  Rotation:
+    - 1.0
+    - 0.0
+    - 0.0
+    - 0.0
