@@ -1,4 +1,5 @@
 import argparse
+import logging
 import shutil
 from pathlib import Path
 
@@ -7,8 +8,7 @@ from isaacsim.simulation_app import SimulationApp
 from auto_sim import config
 from auto_sim.environment import get_environment_list
 
-import logging
-logger=logging.getLogger(__name__)
+logger = logging.getLogger(__name__)
 
 
 def parse_args() -> argparse.Namespace:
@@ -38,8 +38,8 @@ def main() -> None:
     )
 
     # All imports that are related to isaac sim should happen after loading the app
-    from auto_sim.environment.load import setup_world, load_environment
     from auto_sim.drone import Drone
+    from auto_sim.environment.load import load_environment, setup_world
 
     world = setup_world()
     load_environment(getattr(args, "env"))

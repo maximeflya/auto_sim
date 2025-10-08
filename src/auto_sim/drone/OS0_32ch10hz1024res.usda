@@ -1,0 +1,45 @@
+#usda 1.0
+(
+    defaultPrim = "OS0_REV6_32_10hz_1024_resolution"
+    doc = "Custom lidar inspired from the 128 beam version. Modified nearRange 0.3 -> 0.35 and maxReturns 2->1. Took the first 32 fireTimeNs"
+)
+
+def OmniLidar "OS0_REV6_32_10hz_1024_resolution" (
+    prepend apiSchemas = ["OmniSensorGenericLidarCoreAPI"]
+)
+{
+    float omni:sensor:Core:avgPowerW = 0.002
+    float omni:sensor:Core:azimuthErrorMean = 0
+    float omni:sensor:Core:azimuthErrorStd = 0.01
+    float omni:sensor:Core:elevationErrorMean = 0
+    float omni:sensor:Core:elevationErrorStd = 0.01
+    float[] omni:sensor:Core:emitterState:s001:azimuthDeg = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    uint[] omni:sensor:Core:emitterState:s001:channelId = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32]
+    float[] omni:sensor:Core:emitterState:s001:distanceCorrectionM =  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    float[] omni:sensor:Core:emitterState:s001:elevationDeg = [45.19, 42.24, 39.31, 36.37, 33.42, 30.49, 27.58, 24.68, 21.79, 18.91, 16.05, 13.22, 10.36, 7.53, 4.71, 1.87, -0.96, -3.8, -6.6, -9.44, -12.27, -15.11, -17.95, -20.81, -23.67, -26.54, -29.41, -32.28, -35.19, -38.1, -41.01, -43.95]
+    uint[] omni:sensor:Core:emitterState:s001:fireTimeNs =[381, 1143, 1905, 2667, 3429, 4191, 4953, 5715, 6477, 7239, 8001, 8763, 9525, 10287, 11049, 11811, 12573, 13335, 14097, 14859, 15621, 16383, 17145, 17907, 18669, 19431, 20193, 20955, 21717, 22479, 23241, 24003]
+    float[] omni:sensor:Core:emitterState:s001:focalDistM = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    float[] omni:sensor:Core:emitterState:s001:focalSlope = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    float[] omni:sensor:Core:emitterState:s001:horOffsetM = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    float[] omni:sensor:Core:emitterState:s001:reportRateDiv = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    float[] omni:sensor:Core:emitterState:s001:vertOffsetM = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    float omni:sensor:Core:farRangeM = 50
+    token omni:sensor:Core:intensityMappingType = "LINEAR"
+    token omni:sensor:Core:intensityProcessing = "NORMALIZATION"
+    uint omni:sensor:Core:maxReturns = 2
+    float omni:sensor:Core:minReflectance = 0.1
+    float omni:sensor:Core:nearRangeM = 0.35
+    uint omni:sensor:Core:numberOfChannels = 32
+    uint omni:sensor:Core:numberOfEmitters = 32
+    uint omni:sensor:Core:pulseTimeNs = 6
+    float omni:sensor:Core:rangeAccuracyM = 0.03
+    float omni:sensor:Core:rangeResolutionM = 0.001
+    token omni:sensor:Core:rayType = "IDEALIZED"
+    uint omni:sensor:Core:reportRateBaseHz = 10240
+    token omni:sensor:Core:rotationDirection = "CW"
+    uint omni:sensor:Core:scanRateBaseHz = 10
+    token omni:sensor:Core:scanType = "ROTARY"
+    string omni:sensor:modelName = "OS0_REV6_32_10hz_1024_resolution"
+    float omni:sensor:tickRate = 10
+}
+

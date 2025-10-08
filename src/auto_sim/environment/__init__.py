@@ -1,6 +1,5 @@
 from collections.abc import Sequence
 
-
 NVIDIA_ENVIRONMENTS = {
     "DefaultEnvironment": "Grid/default_environment.usd",
     "BlackGridroom": "Grid/gridroom_black.usd",

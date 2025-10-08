@@ -2,12 +2,16 @@ from pathlib import Path
 
 import yaml
 from isaacsim.core.api.world import World
+from isaacsim.core.utils import stage
 from isaacsim.core.utils.prims import define_prim
 from isaacsim.storage import native
-from isaacsim.core.utils import stage
 
 from auto_sim import config
-from auto_sim.environment import NVIDIA_ENVIRONMENTS, OMNIVERSE_ENVIRONMENTS, LOCAL_ENVIRONMENTS
+from auto_sim.environment import (
+    LOCAL_ENVIRONMENTS,
+    NVIDIA_ENVIRONMENTS,
+    OMNIVERSE_ENVIRONMENTS,
+)
 
 DEFAULT_WORLD_CONFIG_PATH = config.path / "world.yaml"
 
@@ -53,11 +57,14 @@ def setup_world(config_path: Path = DEFAULT_WORLD_CONFIG_PATH) -> World:
     if not isinstance(cfg, dict):
         raise RuntimeError("Unexpected format when parsing config file")
 
+    define_prim("/World")
+
     return World(
-        physics_dt= 1 / cfg["physics_fps"],
+        physics_dt=1 / cfg["physics_fps"],
         rendering_dt=1 / cfg["rendering_fps"],
-        stage_units_in_meters= cfg["stage_units_in_meters"]
+        stage_units_in_meters=cfg["stage_units_in_meters"],
     )
+
 
 def load_environment(env_name: str) -> None:
     environment_path = get_environment_path(env_name)

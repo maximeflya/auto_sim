@@ -1,12 +1,6 @@
 #usda 1.0
 (
     defaultPrim = "drone"
-    doc = """Generated from Composed Stage of root layer 
-"""
-    endTimeCode = 1000000.0000000001
-    metersPerUnit = 1
-    startTimeCode = 0
-    timeCodesPerSecond = 30
     upAxis = "Z"
 )
 
@@ -32,5 +26,95 @@ def Xform "drone"
         double3 xformOp:translate = (0, 0, 0)
         uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateZYX", "xformOp:scale"]
     }
-}
 
+    def Xform "body"
+    {
+        def Xform "vio"
+        {
+            quatd xformOp:orient = (0.9993948340415955, 0.00468103401362896, -0.032427918165922165, -0.011682618409395218)
+            double3 xformOp:scale = (1, 1, 1)
+            double3 xformOp:translate = (0.27110999822616577, -0.0369499996304512, -0.012810000218451023)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+            def Xform "vio_cam"
+            {
+                quatd xformOp:orient = (0.7071068286895752, 0, 0, 0.7071068286895752)
+                double3 xformOp:scale = (1, 1, 1)
+                double3 xformOp:translate = (0, 0, 0)
+                uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+                def Xform "cam_0"
+                {
+                    quatd xformOp:orient = (0.117929607629776, 0.7046108245849609, -0.6907762289047241, 0.11155418306589127)
+                    double3 xformOp:scale = (1, 1, 1)
+                    double3 xformOp:translate = (0.012600000016391277, 0.006800000090152025, -0.016699999570846558)
+                    uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+                }
+
+                def Xform "cam_1"
+                {
+                    quatd xformOp:orient = (0.6535078883171082, 0.2570249140262604, -0.24653060734272003, 0.667898416519165)
+                    double3 xformOp:scale = (1, 1, 1)
+                    double3 xformOp:translate = (0.009600000455975533, 0.005799999926239252, 0.010200000368058681)
+                    uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+                }
+
+                def Xform "cam_2"
+                {
+                    quatd xformOp:orient = (0.4590693414211273, 0.5299821496009827, -0.5497941970825195, 0.45398303866386414)
+                    double3 xformOp:scale = (1, 1, 1)
+                    double3 xformOp:translate = (0.01979999989271164, 0.006599999964237213, -0.004399999976158142)
+                    uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+                }
+            }
+        }
+
+        def Xform "lights"
+        {
+            quatd xformOp:orient = (0, 0, 0, 1)
+            double3 xformOp:scale = (1, 1, 1)
+            double3 xformOp:translate = (0.2787800133228302, 0, -0.014600000344216824)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+            def Xform "light_lo"
+            {
+                quatd xformOp:orient = (-0.2923699915409088, 0, 0, 0.9563000202178955)
+                double3 xformOp:scale = (1, 1, 1)
+                double3 xformOp:translate = (0.02500000037252903, -0.12999999523162842, 0)
+                uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+            }
+
+            def Xform "light_li"
+            {
+                quatd xformOp:orient = (0.10819000005722046, 0, 0, -0.99413001537323)
+                double3 xformOp:scale = (1, 1, 1)
+                double3 xformOp:translate = (0, -0.0689999982714653, 0)
+                uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+            }
+
+            def Xform "light_ri"
+            {
+                quatd xformOp:orient = (0.10819000005722046, 0, 0, 0.99413001537323)
+                double3 xformOp:scale = (1, 1, 1)
+                double3 xformOp:translate = (0, 0.0689999982714653, 0)
+                uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+            }
+
+            def Xform "light_ro"
+            {
+                quatd xformOp:orient = (0.2923699915409088, 0, 0, 0.9563000202178955)
+                double3 xformOp:scale = (1, 1, 1)
+                double3 xformOp:translate = (0.02500000037252903, 0.12999999523162842, 0)
+                uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+            }
+        }
+
+        def Xform "xacti"
+        {
+            quatd xformOp:orient = (1, 0, 0, 0)
+            double3 xformOp:scale = (1, 1, 1)
+            double3 xformOp:translate = (0.27110999822616577, 0, -0.012810000218451023)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+        }
+    }
+}
