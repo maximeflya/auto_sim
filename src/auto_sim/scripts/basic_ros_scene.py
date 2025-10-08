@@ -5,6 +5,7 @@ from pathlib import Path
 from isaacsim.simulation_app import SimulationApp
 
 from auto_sim import config
+from auto_sim.environment import get_environment_list
 
 
 def parse_args() -> argparse.Namespace:
@@ -12,6 +13,11 @@ def parse_args() -> argparse.Namespace:
         description="Spawn an isaac sim instance with a basic scene and basic sensor set"
     )
     parser.add_argument("--headless", action="store_true")
+    parser.add_argument(
+        "--env",
+        default="Warehouse",
+        help=f"Environment name, possible names are: {get_environment_list()}",
+    )
     return parser.parse_args()
 
 
@@ -29,9 +35,10 @@ def main() -> None:
     )
 
     # All imports that are related to isaac sim should happen after loading the app
-    from auto_sim.environment import setup_world
+    from auto_sim.environment.load import setup_world, load_environment
 
     setup_world()
+    load_environment(getattr(args, "env"))
 
     while simulation_app.is_running():
         simulation_app.update()
