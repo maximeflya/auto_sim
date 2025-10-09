@@ -9,6 +9,7 @@ from isaacsim.core.api.robots import Robot
 from isaacsim.core.api.world import World
 from isaacsim.core.utils import stage
 from isaacsim.sensors.rtx import LidarRtx
+from isaacsim.sensors.physics import IMUSensor
 import omni
 from pxr import Gf
 import numpy as np
@@ -37,6 +38,13 @@ class Drone:
     def __init__(self, world: World, drone_config: DroneConfig = DroneConfig()) -> None:
         self.prim_path = drone_config.prim_path
         stage.add_reference_to_stage(str(drone_config.usd_file), self.prim_path)
+
+        imu_cfg = yaml.safe_load(drone_config.imus_file.read_text())
+        if not isinstance(imu_cfg, list):
+            raise RuntimeError(
+                f"When reading {str(drone_config.imus_file)}, expected the imu config to be a list got {type(imu_cfg)}"
+            )
+        self._add_imu(imu_cfg)
 
         if drone_config.has_lights:
             light_cfg = yaml.safe_load(drone_config.lights_file.read_text())
@@ -85,6 +93,16 @@ class Drone:
                         "inputs:width": light["Width"],
                     },
                 )
+
+    def _add_imu(self, imu_cfg: Sequence[Mapping[str, Any]]) -> None:
+        for imu in imu_cfg:
+            IMUSensor(
+                prim_path= f"{self.prim_path}{imu['Parent']}/{imu['Topic']}",
+                name=imu['Topic'],
+                frequency=imu["UpdateRate"],
+                translation=np.array([0, 0, 0]),
+                orientation=np.array([1, 0, 0, 0]),
+            )
 
     def _add_camera_sensor(self, cam_cfg: Sequence[Mapping[str, Any]]) -> None:
         """
