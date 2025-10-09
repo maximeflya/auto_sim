@@ -24,12 +24,12 @@ class DroneConfig:
     has_lidar: bool = True
 
     prim_path: str = "/World/Drone"
-    usd_file: Path = Path(__file__).parent / "drone.usda"
-    lights_file: Path = Path(__file__).parent / "lights.yaml"
-    vio_file: Path = Path(__file__).parent / "vio_cams.yaml"
-    xacti_file: Path = Path(__file__).parent / "xacti.yaml"
-    imus_file: Path = Path(__file__).parent / "imus.yaml"
-    lidar_file: Path = Path(__file__).parent / "lidar.yaml"
+    usd_file: Path = Path(__file__).parent / "config/drone.usda"
+    lights_file: Path = Path(__file__).parent / "config/lights.yaml"
+    vio_file: Path = Path(__file__).parent / "config/vio_cams.yaml"
+    xacti_file: Path = Path(__file__).parent / "config/xacti.yaml"
+    imus_file: Path = Path(__file__).parent / "config/imus.yaml"
+    lidar_file: Path = Path(__file__).parent / "config/lidar.yaml"
 
 
 # class or function?
@@ -148,7 +148,6 @@ class Drone:
             )
 
     def _add_lidar(self, lidar_cfg: Mapping[str, Any]) -> None:
-        print((Path(__file__).parent/"OS0_32ch10hz1024res.usda").exists())
         omni.kit.commands.execute(
             "IsaacSensorCreateRtxLidar",
             translation=Gf.Vec3d(*lidar_cfg["Translation"]),
