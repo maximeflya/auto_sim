@@ -57,7 +57,6 @@ def setup_world(config_path: Path = DEFAULT_WORLD_CONFIG_PATH) -> World:
     if not isinstance(cfg, dict):
         raise RuntimeError("Unexpected format when parsing config file")
 
-    define_prim("/World")
 
     return World(
         physics_dt=1 / cfg["physics_fps"],
@@ -68,5 +67,6 @@ def setup_world(config_path: Path = DEFAULT_WORLD_CONFIG_PATH) -> World:
 
 def load_environment(env_name: str) -> None:
     environment_path = get_environment_path(env_name)
+    define_prim("/World")
     env_prim = define_prim("/World/Environment")
     stage.add_reference_to_stage(str(environment_path), prim_path=env_prim.GetPath())
