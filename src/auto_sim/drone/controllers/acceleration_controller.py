@@ -11,11 +11,11 @@ from numpy import float32
 from numpy.typing import NDArray
 from scipy.spatial.transform import Rotation
 
-from auto_sim.drone.controller.vehicle_physics import (
-    VehiclePhysics,
+from auto_sim.drone.physics.vehicle_physics import (
+    VehiclePhysics
 )
-from auto_sim.drone.controller.state import State
-from auto_sim.drone.controller.backends import Backend
+from auto_sim.drone.state import State
+from auto_sim.drone.controllers import Backend
 
 
 class AccelerationController(Backend):
@@ -25,10 +25,6 @@ class AccelerationController(Backend):
         # Define the control gains matrix for the outer-loop and the dynamic parameters
         # for the vehicle
         super().__init__()
-
-
-        # Validity params
-        self.max_valid_delay = 0.5
 
         # init states
         self.r = Rotation.identity()

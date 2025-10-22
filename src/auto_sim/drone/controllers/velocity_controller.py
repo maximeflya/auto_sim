@@ -11,25 +11,20 @@ from numpy import float32
 from numpy.typing import NDArray
 from scipy.spatial.transform import Rotation
 
-from autonomy_simulator.utils.logic_pegasus.vehicles.vehicle_physics import (
-    VehiclePhysics,
+from auto_sim.drone.controllers import Backend
+
+from auto_sim.drone.physics.vehicle_physics import (
+    VehiclePhysics
 )
 
 from ..state import State  # noqa: E402
-from .backend import Backend  # noqa: E402
-from .roswrapper import DroneRosWrapper
-
 
 class VelocityController(Backend):
     def __init__(
         self,
-        ros_wrapper: DroneRosWrapper,
-        num_rotors: int = 4,
         init_yaw: float = 0.0,
     ) -> None:
         super().__init__()
-
-        self.ros_wrapper = ros_wrapper
 
         self.kp = np.diag([10.0, 10.0, 10.0])
         self.kd = np.diag([0.0, 0.0, 0.0])
@@ -41,7 +36,6 @@ class VelocityController(Backend):
         self.controller_timeout = 0.1  # Allowed duration without setpoint message
 
         # Save the configurations for this backend
-        self._num_rotors = num_rotors
         self.init_yaw = init_yaw
 
         # Initial states

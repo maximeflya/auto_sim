@@ -9,8 +9,8 @@ from typing import Any, Tuple
 import numpy as np
 from numpy.typing import NDArray
 
-from auto_sim.drone.controller.vehicle_physics import (
-    VehiclePhysics,
+from auto_sim.drone.physics.vehicle_physics import (
+    VehiclePhysics
 )
 
 from ..state import State

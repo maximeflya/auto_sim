@@ -7,6 +7,7 @@ import isaacsim.core.utils.prims as prim_utils
 import yaml
 from isaacsim.core.api.robots import Robot
 from isaacsim.core.api.world import World
+from isaacsim.core.prims import RigidPrim
 from isaacsim.core.utils import stage
 from isaacsim.sensors.rtx import LidarRtx
 from isaacsim.sensors.physics import IMUSensor
@@ -38,6 +39,8 @@ class Drone:
     def __init__(self, world: World, drone_config: DroneConfig = DroneConfig()) -> None:
         self.prim_path = drone_config.prim_path
         stage.add_reference_to_stage(str(drone_config.usd_file), self.prim_path)
+        self.prim = RigidPrim(self.prim_path, reset_xform_properties=False)
+
 
         imu_cfg = yaml.safe_load(drone_config.imus_file.read_text())
         if not isinstance(imu_cfg, list):
@@ -78,6 +81,17 @@ class Drone:
 
         # Is this really required?
         world.scene.add(Robot(prim_path=self.prim_path, name="drone", position=[0, 0, 1]))
+
+        world.add_physics_callback("drone_physics_cb", self.on_physics_step)
+
+        # TODO: remove
+        self.count = 0
+
+    def on_physics_step(self, dt: float) -> None:
+        self.count += 1
+        if not self.count % 33:
+            print(f'{self.prim.get_velocities()}')
+        self.prim.apply_forces_and_torques_at_pos(np.array([1, 1, 1000]), np.array([1,1,1]), )
 
     def _add_lights(self, cfg: Sequence[Mapping[str, Any]]) -> None:
         for light in cfg:
