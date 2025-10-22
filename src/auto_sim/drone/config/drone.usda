@@ -34,12 +34,24 @@ def Xform "drone" (
         uniform token subdivisionScheme = "none"
         float3 xformOp:rotateZYX = (0, 7.5, 0)
         float3 xformOp:scale = (1, 1, 1)
-        double3 xformOp:translate = (0, 0, 0)
+        double3 xformOp:translate = (0.08, 0, 0) # TODO: properly determine value
         uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateZYX", "xformOp:scale"]
     }
 
     def Xform "body"
     {
+        def Xform "mass" (
+            apiSchemas = ["PhysicsMassAPI", "PhysicsRigidBodyAPI", "PhysxRigidBodyAPI"]
+        )
+        {
+            point3f physics:centerOfMass = (0, 0, 0)
+            float3 physics:diagonalInertia = (0.015658, 0.018874, 0.028459)
+            float physics:mass = 1.86
+            quatf xformOp:orient = (1, 0, 0, 0)
+            float3 xformOp:scale = (1, 1, 1)
+            float3 xformOp:translate = (0.10878, 0, -0.0146)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+        }
         def Xform "vio"
         {
             quatd xformOp:orient = (0.9993948340415955, 0.00468103401362896, -0.032427918165922165, -0.011682618409395218)
