@@ -41,7 +41,7 @@ def Xform "drone" (
     def Xform "body"
     {
         def Xform "mass" (
-            apiSchemas = ["PhysicsMassAPI", "PhysicsRigidBodyAPI", "PhysxRigidBodyAPI"]
+            apiSchemas = ["PhysicsMassAPI",]
         )
         {
             point3f physics:centerOfMass = (0, 0, 0)
