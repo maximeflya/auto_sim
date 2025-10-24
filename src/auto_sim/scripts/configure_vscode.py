@@ -64,6 +64,8 @@ def main() -> None:
                 flags=re.DOTALL,
             )
 
+            # TODO: Add ros path
+
         file_path.write_text(content)
 
 

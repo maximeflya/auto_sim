@@ -21,6 +21,7 @@ def parse_args() -> argparse.Namespace:
         default="Warehouse",
         help=f"Environment name, possible names are: {get_environment_list()}",
     )
+    parser.add_argument("--no-ros", dest="ros", action="store_false")
     return parser.parse_args()
 
 
@@ -34,7 +35,7 @@ def main() -> None:
 
     simulation_app = SimulationApp(
         {"headless": getattr(args, "headless")},
-        # str(tmp_isaac_sim_path / "apps/isaacsim.exp.no_deprecated.python.ros.kit"),
+        str(tmp_isaac_sim_path / "apps/isaacsim.exp.no_deprecated.python.ros.kit"),
         # str(tmp_isaac_sim_path / "apps/isaacsim.exp.full.kit"),
         # "/home/autoserver/isaacsim/_build/linux-x86_64/release/apps/isaacsim.exp.full.kit"
     )
@@ -43,6 +44,8 @@ def main() -> None:
     from auto_sim.drone import Drone
     from auto_sim.environment.load import load_environment, setup_world
     from isaacsim.core.utils.extensions import enable_extension
+    from auto_sim.ros2.clock import load_clock_graph
+
 
     enable_extension("isaacsim.ros2.bridge")
     enable_extension("omni.graph.bundle.action")
@@ -53,6 +56,10 @@ def main() -> None:
 
     world = setup_world()
     load_environment(getattr(args, "env"))
+
+    if args.ros:
+        load_clock_graph()
+
     Drone(world)
 
     while simulation_app.is_running():
