@@ -11,7 +11,7 @@ from typing import Any, List
 import numpy as np
 import numpy.typing as npt
 
-from .state import State
+from auto_sim.drone.state import State
 
 
 class LinearDrag:

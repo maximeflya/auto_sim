@@ -57,7 +57,6 @@ def setup_world(config_path: Path = DEFAULT_WORLD_CONFIG_PATH) -> World:
     if not isinstance(cfg, dict):
         raise RuntimeError("Unexpected format when parsing config file")
 
-
     return World(
         physics_dt=1 / cfg["physics_fps"],
         rendering_dt=1 / cfg["rendering_fps"],

@@ -1,43 +1,22 @@
-"""
-| Author: Marcelo Jacinto (marcelo.jacinto@tecnico.ulisboa.pt)
-| License: BSD-3-Clause. Copyright (c) 2023, Marcelo Jacinto. All rights reserved.
-"""
-
 from abc import ABC, abstractmethod
-from typing import Any, Tuple
+from typing import Tuple, Generic, TypeVar
 
 import numpy as np
 from numpy.typing import NDArray
 
-from auto_sim.drone.physics.vehicle_physics import (
-    VehiclePhysics
-)
+from isaacsim.core.api import SimulationContext
 
-from ..state import State
+from auto_sim.drone.physics.vehicle_physics import VehiclePhysics
+from auto_sim.drone.state import State
 
 
-class Backend(ABC):
-    """
-    Properties
-    """
-    @property
-    def vehicle(self) -> Any:
-        """A reference to the vehicle associated with this backend.
+Reference = TypeVar("Reference")
 
-        Returns:
-            Vehicle: A reference to the vehicle associated with this backend.
-        """
-        return self._vehicle
-
-    def initialize(self, vehicle: Any) -> None:
-        """A method that can be invoked when the simulation is starting to give
-        access to the control backend to the entire vehicle object.
-
-        Args:
-            vehicle (Vehicle): A reference to the vehicle that this sensor is
-            associated with
-        """
-        self._vehicle = vehicle
+class Controller(ABC, Generic[Reference]):
+    def __init__(self, reference: Reference,  vehicle_physics: VehiclePhysics,) -> None:
+        self._ref = reference
+        self._sim_context = SimulationContext.instance()
+        self._vehicle_physics = vehicle_physics
 
     @abstractmethod
     def update_state(self, state_mass: State) -> None:
@@ -50,8 +29,13 @@ class Backend(ABC):
         """
 
     @abstractmethod
+    def is_valid(self) -> bool:
+        """If the controller is in a state to control the drone or not."""
+
+
+    @abstractmethod
     def get_moments_and_forces(
-        self, vehicle_physics: VehiclePhysics, time: float
+        self
     ) -> Tuple[NDArray[np.float32], NDArray[np.float32]]:
         """Method that when implemented, should be used to compute the moments and forces
         to be applied to the vehicle in simulation based on the motor speed. This method
@@ -72,6 +56,10 @@ class Backend(ABC):
             S (np.array): A matrix in so(3)
         """
         return np.array([-s[1, 2], s[0, 2], -s[0, 1]])
+
+    def update_reference(self, ref: Reference) -> None:
+        """Update the reference of the controller"""
+        self._ref = ref
 
     def start(self) -> None:
         """

@@ -5,8 +5,8 @@ import numpy as np
 from numpy import float32
 from numpy.typing import NDArray
 
-from .state import State
 from .linear_drag import LinearDrag
+from auto_sim.drone.state import State
 from .thrusters import Elios3Thrusters
 
 

@@ -20,9 +20,7 @@ def load_clock_graph() -> og._omni_graph_core.Graph:
                 ("ros2Context.outputs:context", "publishClock.inputs:context"),
                 ("readSimTime.outputs:simulationTime", "publishClock.inputs:timeStamp"),
             ],
-            keys.SET_VALUES: [
-                ("readSimTime.inputs:resetOnStop", True)
-            ]
+            keys.SET_VALUES: [("readSimTime.inputs:resetOnStop", True)],
         },
     )
     return clock

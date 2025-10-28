@@ -5,7 +5,7 @@
 )
 
 def Xform "drone" (
-    apiSchemas = ["PhysicsArticulationRootAPI", "PhysxArticulationAPI", "PhysicsRigidBodyAPI", "PhysxRigidBodyAPI"]
+    apiSchemas = ["PhysicsArticulationRootAPI", "PhysxArticulationAPI", "PhysicsRigidBodyAPI", "PhysxRigidBodyAPI", "PhysicsMassAPI"]
 )
 {
     bool physics:kinematicEnabled = 0
@@ -16,6 +16,10 @@ def Xform "drone" (
     float3 xformOp:rotateXYZ = (0, -0, 0)
     float3 xformOp:scale = (1, 1, 1)
     double3 xformOp:translate = (0, 0, 0)
+    float3 physics:diagonalInertia = (0.015658, 0.018874, 0.028459)
+    float physics:mass = 1.86
+    point3f physics:centerOfMass = (0.10878, 0, -0.0146)
+
     uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateXYZ", "xformOp:scale"]
 
     def Mesh "mesh" (

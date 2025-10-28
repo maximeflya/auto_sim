@@ -4,6 +4,7 @@
 | Description: File that implements the high-level control logic for the vehicle
 """
 
+from dataclasses import dataclass, field
 from typing import Any, Tuple
 
 import numpy as np
@@ -11,20 +12,26 @@ from numpy import float32
 from numpy.typing import NDArray
 from scipy.spatial.transform import Rotation
 
-from auto_sim.drone.controllers import Backend
+from auto_sim.drone.controllers import Controller
+from auto_sim.drone.physics.vehicle_physics import VehiclePhysics
+from auto_sim.drone.state import State
 
-from auto_sim.drone.physics.vehicle_physics import (
-    VehiclePhysics
-)
 
-from ..state import State  # noqa: E402
+@dataclass
+class VelRef:
+    vel: NDArray[Any] = field(default_factory=lambda: np.zeros((3,)))
+    yaw_rate: float = 0.0
+    mode: str = "body"
 
-class VelocityController(Backend):
+
+class VelocityController(Controller[VelRef]):
     def __init__(
         self,
-        init_yaw: float = 0.0,
+        reference: VelRef,
+        vehicle_physics: VehiclePhysics,
+        init_yaw: float = 0.0
     ) -> None:
-        super().__init__()
+        super().__init__(reference, vehicle_physics)
 
         self.kp = np.diag([10.0, 10.0, 10.0])
         self.kd = np.diag([0.0, 0.0, 0.0])
@@ -55,28 +62,28 @@ class VelocityController(Backend):
         self.v = state_mass.linear_velocity
 
     def get_ref(self) -> Tuple[NDArray[Any], float, NDArray[Any], NDArray[Any]]:
-        reference = self.ros_wrapper.get_vel_ref()
-        linear_vel_ref = reference.vel
+        linear_vel_ref = self._ref.vel
         a_ref = np.zeros((3,))
         j_ref = np.zeros((3,))
 
-        if reference.mode == "body":
+        if self._ref.mode == "body":
             yaw = self.r.as_euler("xyz")[2]
             v_x = np.sin(yaw) * linear_vel_ref[0] + np.cos(yaw) * linear_vel_ref[1]
             v_y = -np.cos(yaw) * linear_vel_ref[0] + np.sin(yaw) * linear_vel_ref[1]
             linear_vel_ref = np.array([v_x, v_y, linear_vel_ref[2]])
-        elif reference.mode == "local":
+        elif self._ref.mode == "local":
             linear_vel_ref[0], linear_vel_ref[1] = linear_vel_ref[1], linear_vel_ref[0]
         else:
             raise NotImplementedError
 
-        return linear_vel_ref, reference.yaw_rate, a_ref, j_ref
+        return linear_vel_ref, self._ref.yaw_rate, a_ref, j_ref
 
     def get_moments_and_forces(
-        self, vehicle_physics: VehiclePhysics, time: float
+        self,
     ) -> Tuple[NDArray[float32], NDArray[float32]]:
-        dt = time - self.last_time
-        self.last_time = time
+        # Update the time step
+        dt = self._sim_context.current_time - self.last_time
+        self.last_time = self._sim_context.current_time
 
         linear_vel_ref, yaw_vel_ref, a_ref, j_ref = self.get_ref()
 
@@ -90,7 +97,6 @@ class VelocityController(Backend):
 
         # Compute the control inputs (u_1, tau)
         u_1, tau = self.compute_control_inputs(
-            vehicle_physics,
             ev,
             np.zeros((3,)),
             self.integral_error,
@@ -100,15 +106,14 @@ class VelocityController(Backend):
             j_ref,
         )
 
-        rotor_speed_ref = vehicle_physics.rotor_speeds_from_forces_and_moments(u_1, tau)
+        rotor_speed_ref = self._vehicle_physics.rotor_speeds_from_forces_and_moments(u_1, tau)
 
-        vehicle_physics.set_target_rotor_speeds(rotor_speed_ref)
+        self._vehicle_physics.set_target_rotor_speeds(rotor_speed_ref)
 
-        return vehicle_physics.update(dt)
+        return self._vehicle_physics.update(dt)
 
     def compute_control_inputs(
         self,
-        vehicle_physics: VehiclePhysics,
         ep: NDArray[Any],
         ev: NDArray[Any],
         ei: NDArray[Any],
@@ -121,8 +126,8 @@ class VelocityController(Backend):
             -(self.kp @ ep)
             - (self.kd @ ev)
             - (self.ki @ ei)
-            + np.array([0.0, 0.0, vehicle_physics.m() * vehicle_physics.g()])
-            + (vehicle_physics.m() * a_ref)
+            + np.array([0.0, 0.0, self._vehicle_physics.m() * self._vehicle_physics.g()])
+            + (self._vehicle_physics.m() * a_ref)
         )
 
         # Get the current axis
@@ -154,7 +159,7 @@ class VelocityController(Backend):
         # Compute the desired angular velocity by projecting the angular velocity in the
         # Xb-Yb plane projection of angular velocity on xB − yB plane see eqn (7) from
         # [2].
-        hw = (vehicle_physics.m() / u_1) * (j_ref - np.dot(z_b_des, j_ref) * z_b_des)
+        hw = (self._vehicle_physics.m() / u_1) * (j_ref - np.dot(z_b_des, j_ref) * z_b_des)
 
         # desired angular velocity
         w_des = np.array(

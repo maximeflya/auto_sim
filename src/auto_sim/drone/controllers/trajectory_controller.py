@@ -1,3 +1,4 @@
+from dataclasses import dataclass, field
 from typing import Any, Tuple
 
 import numpy as np
@@ -5,27 +6,32 @@ from numpy import float32
 from numpy.typing import NDArray
 from scipy.spatial.transform import Rotation
 
-from autonomy_simulator.utils.datatypes import overrides
-from autonomy_simulator.utils.logic_pegasus.vehicles.vehicle_physics import (
-    VehiclePhysics,
-)
-
-from ..state import State  # noqa: E402
-from .backend import Backend  # noqa: E402
-from .roswrapper import DroneRosWrapper
+from auto_sim.drone.controllers import Controller
+from auto_sim.drone.physics.vehicle_physics import VehiclePhysics
+from auto_sim.drone.state import State
 
 
-class TrajectoryController(Backend):
+@dataclass
+class TrajRef:
+    position: NDArray[Any] = field(default_factory=lambda: np.array((0, 0, 1)))
+    velocity: NDArray[Any] = field(default_factory=lambda: np.zeros((3,)))
+    acceleration: NDArray[Any] = field(default_factory=lambda: np.zeros((3,)))  # unused
+    jerk: NDArray[Any] = field(default_factory=lambda: np.zeros((3,)))  # unused
+    yaw: float = 0.0
+    yaw_rate: float = 0.0
+    timestamp: float = -1000.0  # Large number to force controller to be invalid
+
+
+class TrajectoryController(Controller[TrajRef]):
     def __init__(
         self,
-        ros_wrapper: DroneRosWrapper,
+        reference: TrajRef,
+        vehicle_physics: VehiclePhysics,
         num_rotors: int = 4,
         init_pos: NDArray[Any] = np.zeros((3,)),
         init_yaw: float = 0.0,
     ) -> None:
-        super().__init__()
-
-        self.ros_wrapper = ros_wrapper
+        super().__init__(reference, vehicle_physics)
 
         self.kp = np.diag([10.0, 10.0, 10.0])
         self.kd = np.diag([8.5, 8.5, 8.5])
@@ -48,13 +54,10 @@ class TrajectoryController(Backend):
         self.v = np.zeros((3,))  # The linear velocity of vehicle in inertial frame
         self.integral_error = np.array([0.0, 0.0, 0.0])
 
-    @overrides(Backend)
     def is_valid(self) -> bool:
         # Backend is only valid if the last setpoint message is withing controller timeout
-        reference = self.ros_wrapper.get_traj_ref()
-        return self.last_time - reference.timestamp < self.controller_timeout
+        return self.last_time - self._ref.timestamp < self.controller_timeout
 
-    @overrides(Backend)
     def update_state(self, state_mass: State) -> None:
         self.p = state_mass.position
         self.r = Rotation.from_quat(state_mass.attitude)
@@ -64,24 +67,22 @@ class TrajectoryController(Backend):
     def get_ref(
         self,
     ) -> Tuple[NDArray[Any], NDArray[Any], NDArray[Any], NDArray[Any], float, float]:
-        reference = self.ros_wrapper.get_traj_ref()
-        p_ref = reference.position
-        v_ref = reference.velocity
-        a_ref = reference.acceleration
-        j_ref = reference.jerk
-        yaw_ref = reference.yaw
-        yaw_rate_ref = reference.yaw_rate
+        p_ref = self._ref.position
+        v_ref = self._ref.velocity
+        a_ref = self._ref.acceleration
+        j_ref = self._ref.jerk
+        yaw_ref = self._ref.yaw
+        yaw_rate_ref = self._ref.yaw_rate
 
         return p_ref, v_ref, a_ref, j_ref, yaw_ref, yaw_rate_ref
 
-    @overrides(Backend)
     def get_moments_and_forces(
-        self, vehicle_physics: VehiclePhysics, time: float
+        self, 
     ) -> Tuple[NDArray[float32], NDArray[float32]]:
 
         # Update the time step
-        dt = time - self.last_time
-        self.last_time = time
+        dt = self._sim_context.current_time - self.last_time
+        self.last_time = self._sim_context.current_time
 
         # Get references
         p_ref, v_ref, a_ref, j_ref, yaw_ref, yaw_rate_ref = self.get_ref()
@@ -104,7 +105,6 @@ class TrajectoryController(Backend):
 
         # Compute the control inputs (u_1, tau)
         u_1, tau = self.compute_control_inputs(
-            vehicle_physics,
             ep,
             ev,
             ei,
@@ -117,16 +117,15 @@ class TrajectoryController(Backend):
         # Use the allocation matrix provided by the Multirotor vehicle to convert the
         # desired force and torque to angular velocity [rad/s] references to give to each
         # rotor
-        rotor_speed_ref = vehicle_physics.rotor_speeds_from_forces_and_moments(u_1, tau)
+        rotor_speed_ref = self._vehicle_physics.rotor_speeds_from_forces_and_moments(u_1, tau)
 
-        vehicle_physics.set_target_rotor_speeds(rotor_speed_ref)
+        self._vehicle_physics.set_target_rotor_speeds(rotor_speed_ref)
 
         # Forces and moments in body frame
-        return vehicle_physics.update(dt)
+        return self._vehicle_physics.update(dt)
 
     def compute_control_inputs(
         self,
-        vehicle_physics: VehiclePhysics,
         ep: NDArray[Any],
         ev: NDArray[Any],
         ei: NDArray[Any],
@@ -139,8 +138,8 @@ class TrajectoryController(Backend):
             -(self.kp @ ep)
             - (self.kd @ ev)
             - (self.ki @ ei)
-            + np.array([0.0, 0.0, vehicle_physics.m() * vehicle_physics.g()])
-            + (vehicle_physics.m() * a_ref)
+            + np.array([0.0, 0.0, self._vehicle_physics.m() * self._vehicle_physics.g()])
+            + (self._vehicle_physics.m() * a_ref)
         )
 
         # Get the current axis
@@ -172,7 +171,7 @@ class TrajectoryController(Backend):
         # Compute the desired angular velocity by projecting the angular velocity in the
         # Xb-Yb plane projection of angular velocity on xB − yB plane see eqn (7) from
         # [2].
-        hw = (vehicle_physics.m() / u_1) * (j_ref - np.dot(z_b_des, j_ref) * z_b_des)
+        hw = (self._vehicle_physics.m() / u_1) * (j_ref - np.dot(z_b_des, j_ref) * z_b_des)
 
         # desired angular velocity
         w_des = np.array(
@@ -186,7 +185,6 @@ class TrajectoryController(Backend):
         tau = -(self.kr @ e_r) - (self.kw @ e_w)
         return np.array([0.0, 0.0, u_1], dtype=float32), tau
 
-    @overrides(Backend)
     def reset_params(self) -> None:
         # Reset state
         self.p = np.zeros((3,))

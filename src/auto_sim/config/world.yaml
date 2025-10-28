@@ -1,3 +1,3 @@
-physics_fps: 1000 # assert physics_dt < rendering_dt
+physics_fps: 210 # assert physics_dt < rendering_dt
 stage_units_in_meters: 1.0
 rendering_fps: 30

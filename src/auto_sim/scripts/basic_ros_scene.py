@@ -41,11 +41,11 @@ def main() -> None:
     )
 
     # All imports that are related to isaac sim should happen after loading the app
+    from isaacsim.core.utils.extensions import enable_extension
+
     from auto_sim.drone import Drone
     from auto_sim.environment.load import load_environment, setup_world
-    from isaacsim.core.utils.extensions import enable_extension
     from auto_sim.ros2.clock import load_clock_graph
-
 
     enable_extension("isaacsim.ros2.bridge")
     enable_extension("omni.graph.bundle.action")
@@ -57,16 +57,26 @@ def main() -> None:
     world = setup_world()
     load_environment(getattr(args, "env"))
 
+    drone = Drone(world)
+
     if args.ros:
+        import rclpy
+        rclpy.init()
+        node = rclpy.create_node("python")
+
         load_clock_graph()
 
-    Drone(world)
 
     while simulation_app.is_running():
-        world.step() # simulation_app.update() crashes
+        if args.ros:
+            for _ in node.subscriptions:
+                # spin once for each subscriptions so that they all have a chance to call their callback
+                rclpy.spin_once(node, timeout_sec=0)
+        world.step()  # simulation_app.update() crashes
         # simulation_app.update()
 
-
+    if args.ros:
+        rclpy.shutdown()
     simulation_app.close()
 
 
